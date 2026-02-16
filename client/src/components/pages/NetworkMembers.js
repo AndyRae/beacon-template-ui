@@ -11,6 +11,7 @@ import { Grid } from "@mui/material";
 import { darken } from "@mui/system";
 import { useEffect, useState } from "react";
 import config from "../../config/config.json";
+import useAuthHeaders from "../../hooks/useAuthHeaders";
 import Founders from "../Founders";
 
 /**
@@ -25,6 +26,9 @@ export default function NetworkMembers() {
   const [networkLogoUrl, setNetworkLogoUrl] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Get authentication headers (includes Bearer token if user is logged in)
+  const authHeaders = useAuthHeaders();
+
   // Utility: remove unwanted HTML tags from descriptions
   const stripHTML = (html) => html?.replace(/<[^>]*>/g, "") || "";
 
@@ -32,7 +36,9 @@ export default function NetworkMembers() {
   useEffect(() => {
     const fetchBeacons = async () => {
       try {
-        const response = await fetch(`${config.apiUrl}/`);
+        const response = await fetch(`${config.apiUrl}/`, {
+          headers: authHeaders,
+        });
         const data = await response.json();
 
         // Save top-level network logo
@@ -52,7 +58,7 @@ export default function NetworkMembers() {
       }
     };
     fetchBeacons();
-  }, []);
+  }, [authHeaders]);
 
   return (
     <>
