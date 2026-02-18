@@ -6,7 +6,6 @@ import { COMMON_MESSAGES } from "../common/CommonMessage";
 import { PATH_SEGMENT_TO_ENTRY_ID } from "../../components/common/textFormatting";
 import { queryBuilder } from "./utils/queryBuilder";
 import { mockSingleBeaconResponse } from "./mockSingleBeaconResponse";
-import useAuthHeaders from "../../hooks/useAuthHeaders";
 
 const buildHeaders = (results = []) => {
   const headerSet = new Set();
@@ -40,9 +39,6 @@ export default function SearchButton({ setSelectedTool }) {
     isExtraFilterValid,
   } = useSelectedEntry();
 
-  // Get authentication headers (includes Bearer token if user is logged in)
-  const authHeaders = useAuthHeaders();
-
   // Main logic executed when the user clicks "Search"
   const handleSearch = async () => {
     const entryTypeId = PATH_SEGMENT_TO_ENTRY_ID[selectedPathSegment];
@@ -73,7 +69,7 @@ export default function SearchButton({ setSelectedTool }) {
       const query = queryBuilder(selectedFilter, entryTypeId);
       const requestOptions = {
         method: "POST",
-        headers: authHeaders,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(query),
       };
 

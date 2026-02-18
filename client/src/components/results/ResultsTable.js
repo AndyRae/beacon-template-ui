@@ -29,7 +29,6 @@ import { useSelectedEntry } from "../context/SelectedEntryContext";
 import { useState, useEffect } from "react";
 import ResultsTableRow from "./ResultsTableRow";
 import { loadNetworkMembersWithMaturity } from "./utils/networkMembers";
-import useAuthHeaders from "../../hooks/useAuthHeaders";
 import CohortsTable from "./CohortsTable";
 import DatasetsTable from "./DatasetsTable";
 import {
@@ -53,9 +52,6 @@ export default function ResultsTable() {
   const [selectedSubRow, setSelectedSubRow] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [networkMembers, setNetworkMembers] = useState([]);
-
-  // Get authentication headers (includes Bearer token if user is logged in)
-  const authHeaders = useAuthHeaders();
 
   const headerCellStyle = {
     backgroundColor: config.ui.colors.primary,
@@ -139,13 +135,13 @@ export default function ResultsTable() {
 
   useEffect(() => {
     async function loadMembers() {
-      const membersWithMaturity = await loadNetworkMembersWithMaturity(authHeaders);
+      const membersWithMaturity = await loadNetworkMembersWithMaturity();
       setNetworkMembers(membersWithMaturity);
     }
     if (config.beaconType === "networkBeacon") {
       loadMembers();
     }
-  }, [authHeaders]);
+  }, []);
 
   const getBeaconStatusLabel = (status) => {
     if (!status) return "Undefined";

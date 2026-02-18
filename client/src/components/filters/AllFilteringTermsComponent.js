@@ -7,7 +7,6 @@ import FilteringTermsTable from "./FilteringTermsTable";
 import { useSelectedEntry } from "../context/SelectedEntryContext";
 import { InputAdornment, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import useAuthHeaders from "../../hooks/useAuthHeaders";
 
 import { searchFilteringTerms } from "../common/filteringTermsHelpers";
 
@@ -49,9 +48,6 @@ export default function AllFilteringTermsComponent({
 
   const unselectedBorderColor = alpha(primaryColor, 0.15);
 
-  // Get authentication headers (includes Bearer token if user is logged in)
-  const authHeaders = useAuthHeaders();
-
   // Handle table pagination: page change
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -68,9 +64,7 @@ export default function AllFilteringTermsComponent({
   useEffect(() => {
     const fetchFilteringTerms = async () => {
       try {
-        const res = await fetch(`${config.apiUrl}/filtering_terms?limit=0`, {
-          headers: authHeaders,
-        });
+        const res = await fetch(`${config.apiUrl}/filtering_terms?limit=0`);
         const data = await res.json();
         setFilteringTerms(data);
       } catch (err) {
