@@ -1,10 +1,8 @@
 import config from "../../../config/config.json";
 
-export async function fetchNetworkMembers(authHeaders = {}) {
+export async function fetchNetworkMembers() {
   try {
-    const response = await fetch(`${config.apiUrl}/services`, {
-      headers: authHeaders,
-    });
+    const response = await fetch(`${config.apiUrl}/services`);
     if (!response.ok) throw new Error("Failed to fetch network members");
     const data = await response.json();
     return data.services || [];
@@ -14,13 +12,11 @@ export async function fetchNetworkMembers(authHeaders = {}) {
   }
 }
 
-export async function fetchNetworkMembersWithMaturity(networkMembers, authHeaders = {}) {
+export async function fetchNetworkMembersWithMaturity(networkMembers) {
   const updatedMembers = await Promise.all(
     networkMembers.map(async (member) => {
       try {
-        const res = await fetch(`${member.url}/configuration`, {
-          headers: authHeaders,
-        });
+        const res = await fetch(`${member.url}/configuration`);
         if (!res.ok) throw new Error(`Failed to fetch ${member.url}`);
         const data = await res.json();
         return {
@@ -36,7 +32,7 @@ export async function fetchNetworkMembersWithMaturity(networkMembers, authHeader
   return updatedMembers;
 }
 
-export async function loadNetworkMembersWithMaturity(authHeaders = {}) {
-  const members = await fetchNetworkMembers(authHeaders);
-  return await fetchNetworkMembersWithMaturity(members, authHeaders);
+export async function loadNetworkMembersWithMaturity() {
+  const members = await fetchNetworkMembers();
+  return await fetchNetworkMembersWithMaturity(members);
 }
