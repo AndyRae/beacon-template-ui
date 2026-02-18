@@ -1,19 +1,26 @@
 import { Box, Typography, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import config from "../../config/config.json";
+import useAuthHeaders from "../../hooks/useAuthHeaders";
 import Loader from "../common/Loader";
 
 // This is a part of the initial homepage, for network beacons only
 export default function BeaconNetworkBanner() {
   const [logos, setLogos] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Get authentication headers (includes Bearer token if user is logged in)
+  const authHeaders = useAuthHeaders();
+
   // Fetch the list of logos of each single beacon that is included in the network.
   // It runs on page load
   useEffect(() => {
     const fetchLogos = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${config.apiUrl}`);
+        const res = await fetch(`${config.apiUrl}`, {
+          headers: authHeaders,
+        });
         const data = await res.json();
         const entries = data.responses || [];
 
@@ -41,7 +48,7 @@ export default function BeaconNetworkBanner() {
     };
 
     fetchLogos();
-  }, []);
+  }, [authHeaders]);
 
   // If a logo fails to load, remove it from the list
   const handleLogoError = (logoUrlToRemove) => {

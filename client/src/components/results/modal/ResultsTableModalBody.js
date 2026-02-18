@@ -24,6 +24,7 @@ import ResultsTableModalRow from "./ResultsTableModalRow";
 import { queryBuilder } from "../../search/utils/queryBuilder";
 import ResultsTableToolbar from "./ResultsTableToolbar";
 import { exportCSV } from "../utils/exportCSV";
+import useAuthHeaders from "../../../hooks/useAuthHeaders";
 import {
   cleanAndParseInfo,
   summarizeValue,
@@ -59,6 +60,9 @@ const ResultsTableModalBody = ({
   const [expandedRow, setExpandedRow] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const initialized = useRef(false);
+
+  // Get authentication headers (includes Bearer token if user is logged in)
+  const authHeaders = useAuthHeaders();
 
   const start = page * rowsPerPage;
   const end = start + rowsPerPage;
@@ -186,6 +190,7 @@ const ResultsTableModalBody = ({
       selectedPathSegment,
       queryBuilder,
       datasetId,
+      authHeaders,
     });
   }, [
     dataTable,
@@ -195,6 +200,7 @@ const ResultsTableModalBody = ({
     entryTypeId,
     selectedPathSegment,
     datasetId,
+    authHeaders,
   ]);
 
   const CELL_RENDERERS = {
